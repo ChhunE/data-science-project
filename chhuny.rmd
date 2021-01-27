@@ -1,0 +1,133 @@
+## Write a R code to Generate 6X6 matrix (A) using the random numbers between 1 to 100 & generate another 6X6 matrix (B) using random numbers between 500 to 600.
+  a. Find the range of matrices A and B.
+  b. Find the max value from each row of the matrices A and B
+  c. Find the diagonal values of matrices A&B
+  d. Multiply matrices A and B
+  e. Replace the 4th row of Matrix A with diagonal values of matrix B
+  f. Multiply matrices A & B and store the values on X.
+  g. Devidethe matrix A with matrix B
+```{r}
+A <- matrix(sample(1:100,36), nrow = 6)
+B <- matrix(sample(500:600,36), nrow = 6)
+#a.
+range(A)
+range(B)
+#b
+apply(A,1,max)
+apply(B,1,max)
+#c.
+z <- A/B
+diag(t(z))
+#d.
+A%*%B
+#e.
+A[4, ] <- diag(t(B))
+#f.
+X <- A%*%B
+#g.
+A/B
+```
+
+## Create a table using dataframe/tibble with the following categories(a to f)
+  a. First name,
+  b. Second name,
+  c. Age,
+  d. Occupation,
+  e. Place,
+  f. Random numbers(between 1 to 10)
+And input at least 10 samples(observation) and do the following
+  g. Extract the last column (f)
+  h. Find the sum, mean and length of the extracted column
+```{r}
+#a.
+fn <- c("Chhuny", "Kimmonyvorn", "Nataly", "Panha", "Dalya", "Menghong", "Bongrong", "Jenny", "Lynan", "Leapheng")
+#b.
+sn <- c("Am", "Chea", "Chea", "Chean", "Daro", "Chor", "Kit", "Sun", "Thon", "Ty")
+#c.
+age <- c(20, 19, 20, 21, 22, 19, 20, 20, 20, 19)
+#d.
+occ <- c("Student", "Student", "Student", "Student", "Student", "Student", "Student", "Student", "Student", "Student")
+#e.
+pl <- c("PP", "SR", "SR", "PP", "PP", "pp", "KD", "BTB", "BMC", "BTB")
+#f.
+rn <- sample(1:10,10,replace = TRUE)
+
+tableData <- data.frame(FirstName = fn, LastName = sn, Age = age, Occupation = occ, Place = pl, RandomNumber = rn)
+tableData
+
+#g.
+lastColumn <- tableData$RandomNumber
+lastColumn
+#h.
+sum(lastColumn)
+mean(lastColumn)
+length(lastColumn)
+```
+
+## Create a .txt file (Minimum: 150 words) with the lastest news (In English) in Cambodia from the official news agency's website (Note: Include the reference link) and do the following
+  a. Read the .txt file
+  b. Perform the Tokenization & count the words
+  c. Identify the most repeated word and replace that word with "TEST"
+  d. Perform the Sentiment analysis
+```{r}
+#a.
+readText <- read.delim("text.txt")
+#b.
+library(tokenizers)
+wordsData <- paste0(readText)
+tokens <- tokenize_words(wordsData)
+count <- count_words(wordsData)
+tokens
+count
+#c.
+words <- names(table(tokens))[as.vector(table(tokens))==max(table(tokens))]
+wordsCount <- max(table(tokens))
+words
+wordsCount
+subs <- gsub("the", "TEST", tokens)
+subs
+#d.
+library(syuzhet)
+sentimentAnalysis <- get_sentiment(tokens, method = "syuzhet")
+summary(sentimentAnalysis)
+```
+
+## Use dataset(Airline safety https://github.com/fivethirtyeight/data/blob/master/airline-safety/airline-safety.csv) and perform the following
+  a. Import and Clean the dataset
+  b. Find the x and y variables(axis) from the assigned dataset
+  c. Plot the graph using geom_col() and perform the linear model in statistics
+  d. Perform the facet with the available columns (Choose the any two variables from the columns)
+  e. Use the theme layer to do the following (Note: Based on dataset, name the x and y axis & graph)
+    e1. x-axis title = "__", Size = 10, Bold, Text in Green color, Center, space between graph and title = 20
+    e2. y-axis title = "__", Size = 10, Bold, Text in Yellow color, Center, space between graph and title = 20
+    e3. Graph title = "__", Size = 25, Bold, Text in Blue, Center, space between graph and title = 25
+```{r}
+#a.
+dataset<-read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/airline-safety/airline-safety.csv")
+dataset
+is.na(dataset)
+#b.
+library(ggplot2)
+plot <- ggplot(dataset, aes(x=fatal_accidents_85_99, y=fatalities_85_99)) + 
+    xlab("Fatal Accidents") +
+    ylab("Fatalities")
+plot
+#c.
+plot <- plot+geom_col()
+plot <- plot+geom_smooth(method="lm")
+plot
+#d.
+plot+facet_grid(fatal_accidents_85_99~fatalities_85_99)
+plot <- plot+facet_wrap(~fatalities_85_99)
+plot
+#e.
+plot <- plot +
+  ggtitle("AirLine") +
+  theme(
+    axis.title.x=element_text(size=10, color="green", face="bold", margin=margin(t=20,r=20,b=0,l=0)),
+    axis.title.y=element_text(size=10, color="yellow", face="bold", margin=margin(t=0,r=20,b=0,l=20)),
+    plot.title=element_text(size=25, color="blue", face="bold", hjust = 0.5, margin=margin(t=25,r=0,b=25,l=0))
+    )
+plot
+```
+
